@@ -7,42 +7,52 @@
     <style>
         body { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; background: #f3f6fb; color: #111827; }
         .page { display: flex; min-height: 100vh; }
-        .sidebar { width: 280px; background: #1f2937; color: #f9fafb; padding: 24px; }
-        .sidebar h1 { font-size: 1.5rem; margin-bottom: 12px; }
-        .sidebar p { margin: 0 0 18px; line-height: 1.6; }
-        .sidebar a { display: inline-block; margin-bottom: 10px; color: #d1d5db; text-decoration: none; }
-        .sidebar a.active, .sidebar a:hover { color: #ffffff; }
-        .main { flex: 1; padding: 32px; }
+        .sidebar { width: 300px; background: #111827; color: #f8fafc; padding: 28px; }
+        .sidebar h1 { font-size: 1.6rem; margin-bottom: 12px; }
+        .sidebar p { margin: 0 0 18px; line-height: 1.75; color: #d1d5db; }
+        .sidebar a { display: block; margin-bottom: 10px; color: #d1d5db; text-decoration: none; border-radius: 10px; padding: 10px 14px; }
+        .sidebar a.active, .sidebar a:hover { background: rgba(255,255,255,.08); color: #ffffff; }
+        .main { flex: 1; padding: 32px 36px; }
         .header { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 28px; }
         .title { margin: 0; font-size: 2rem; line-height: 1.1; }
         .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 18px; }
-        .card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px; box-shadow: 0 8px 24px rgba(15,23,42,.06); }
-        .card strong { display: block; font-size: 1.25rem; margin-bottom: 8px; }
-        .cell { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px; margin-bottom: 18px; }
-        .cell h2 { margin-top: 0; margin-bottom: 12px; font-size: 1rem; color: #111827; }
+        .card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 18px; padding: 22px; box-shadow: 0 14px 40px rgba(15,23,42,.06); }
+        .card strong { display: block; font-size: 1.2rem; margin-bottom: 8px; }
+        .cell { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 18px; padding: 24px; margin-bottom: 18px; }
+        .cell h2 { margin-top: 0; margin-bottom: 14px; font-size: 1rem; color: #111827; }
         .code { background: #111827; color: #f8fafc; padding: 18px; border-radius: 14px; overflow-x: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", Courier, monospace; }
         .code pre { margin: 0; white-space: pre-wrap; word-break: break-word; }
-        .markdown { line-height: 1.75; color: #334155; }
-        .markdown h1, .markdown h2, .markdown h3, .markdown h4 { margin-top: 1.4rem; }
-        .markdown p { margin: 0.85rem 0; }
-        .markdown ul, .markdown ol { padding-left: 1.3rem; margin: 0.85rem 0; }
-        .markdown pre { background: #f8fafc; padding: 16px; border-radius: 12px; overflow-x: auto; }
+        .markdown-rendered { line-height: 1.75; color: #334155; }
+        .markdown-rendered h1, .markdown-rendered h2, .markdown-rendered h3, .markdown-rendered h4 { margin-top: 1.4rem; }
+        .markdown-rendered p { margin: 0.85rem 0; }
+        .markdown-rendered ul, .markdown-rendered ol { padding-left: 1.3rem; margin: 0.85rem 0; }
         .nav-link { display: inline-flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; border: 1px solid transparent; }
         .nav-link.active { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.16); }
         .error { padding: 18px; background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; border-radius: 12px; margin-bottom: 24px; }
         .footer { margin-top: 32px; color: #6b7280; font-size: 0.95rem; }
         .note { background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 14px; padding: 18px; margin-bottom: 24px; color: #3730a3; }
+        .form-field { margin-bottom: 18px; }
+        .form-field label { display: block; font-weight: 600; margin-bottom: 8px; }
+        .form-field input[type="text"], .form-field input[type="file"] { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid #d1d5db; }
+        .form-field button { background: #2563eb; color: white; border: none; padding: 12px 18px; border-radius: 12px; cursor: pointer; }
+        .form-field button:hover { background: #1d4ed8; }
+        .graph-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 18px; padding: 20px; margin-bottom: 24px; }
+        .graph-card img { width: 100%; max-width: 100%; border-radius: 14px; }
+        .prediction-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        .prediction-table th, .prediction-table td { padding: 12px 14px; border: 1px solid #e5e7eb; text-align: left; }
+        .prediction-table th { background: #f9fafb; }
     </style>
 </head>
 <body>
 <div class="page">
     <aside class="sidebar">
         <h1>Notebook Interface</h1>
-        <p>View your Jupyter notebook through a Django web interface.</p>
-        <a href="?mode=dashboard" class="nav-link{% if mode != 'preview' %} active{% endif %}">Dashboard</a><br />
+        <p>Upload a dataset or enter values to predict with a model and view graphs.</p>
+        <a href="?mode=dashboard" class="nav-link{% if mode == 'dashboard' %} active{% endif %}">Dashboard</a>
         <a href="?mode=preview" class="nav-link{% if mode == 'preview' %} active{% endif %}">Notebook preview</a>
+        <a href="?mode=predict" class="nav-link{% if mode == 'predict' %} active{% endif %}">Predict</a>
         <div class="note">
-            <strong>File:</strong><br />
+            <strong>Notebook:</strong><br />
             {{ notebook.name }}
         </div>
     </aside>
@@ -51,43 +61,104 @@
         <div class="header">
             <div>
                 <p class="title">{{ notebook.name }}</p>
-                <p>Rendered from the local notebook file using Django.</p>
+                <p>Use the Predict tab to upload a CSV or enter numeric values for model inference and graph output.</p>
             </div>
         </div>
 
         {% if notebook.error %}
             <div class="error">{{ notebook.error }}</div>
         {% else %}
-            <div class="summary-grid">
-                <div class="card"><strong>Total cells</strong>{{ notebook.cells|length }}</div>
-                <div class="card"><strong>Markdown cells</strong>{{ notebook.summary.markdown_cells }}</div>
-                <div class="card"><strong>Code cells</strong>{{ notebook.summary.code_cells }}</div>
-            </div>
-
-            {% if mode != 'preview' %}
-                <div class="note">
-                    You are viewing the dashboard summary. Switch to Notebook preview to see all notebook cells.
+            {% if mode == 'dashboard' %}
+                <div class="summary-grid">
+                    <div class="card"><strong>Total cells</strong>{{ notebook.cells|length }}</div>
+                    <div class="card"><strong>Markdown cells</strong>{{ notebook.summary.markdown_cells }}</div>
+                    <div class="card"><strong>Code cells</strong>{{ notebook.summary.code_cells }}</div>
                 </div>
-            {% endif %}
-
-            {% if mode == 'preview' %}
+                <div class="note">
+                    This dashboard summarizes the notebook and lets you switch to preview or prediction mode.
+                </div>
+            {% elif mode == 'preview' %}
                 {% for cell in notebook.cells %}
                     <div class="cell {{ cell.type }}">
                         <h2>{{ cell.type|capfirst }} cell {{ forloop.counter }}</h2>
                         {% if cell.type == "code" %}
                             <div class="code"><pre>{{ cell.source|escape }}</pre></div>
                         {% else %}
-                            <div class="markdown">{{ cell.html|safe }}</div>
+                            <div class="markdown-rendered">{{ cell.html|safe }}</div>
                         {% endif %}
                     </div>
                 {% empty %}
                     <div class="error">No notebook cells found.</div>
                 {% endfor %}
-            {% else %}
-                <div class="card">
-                    <strong>Sample notebook content</strong>
-                    <p>Switch to preview mode to read the full notebook contents.</p>
+            {% elif mode == 'predict' %}
+                <div class="cell">
+                    <h2>Model input and prediction</h2>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="mode" value="predict" />
+                        <div class="form-field">
+                            <label for="data_file">Upload CSV dataset</label>
+                            <input type="file" name="data_file" id="data_file" accept=".csv" />
+                        </div>
+                        <div class="form-field">
+                            <label for="input_value">Manual input values (comma-separated)</label>
+                            <input type="text" name="input_value" id="input_value" placeholder="e.g. 10, 20, 30" />
+                        </div>
+                        <div class="form-field">
+                            <button type="submit">Run prediction</button>
+                        </div>
+                    </form>
                 </div>
+
+                {% if prediction_context %}
+                    {% if prediction_context.error %}
+                        <div class="error">{{ prediction_context.error }}</div>
+                    {% else %}
+                        <div class="summary-grid">
+                            <div class="card"><strong>Dataset</strong>{% if prediction_context.file_name %}{{ prediction_context.file_name }}{% else %}Synthetic data used{% endif %}</div>
+                            <div class="card"><strong>Feature</strong>{{ prediction_context.feature_column }}</div>
+                            <div class="card"><strong>Target</strong>{{ prediction_context.target_column }}</div>
+                        </div>
+
+                        {% if prediction_context.metrics.r2 is not None %}
+                            <div class="summary-grid" style="margin-top: 16px;">
+                                <div class="card"><strong>R²</strong>{{ prediction_context.metrics.r2 }}</div>
+                                <div class="card"><strong>MAE</strong>{{ prediction_context.metrics.mae }}</div>
+                                <div class="card"><strong>MSE</strong>{{ prediction_context.metrics.mse }}</div>
+                            </div>
+                        {% endif %}
+
+                        {% if prediction_context.predictions %}
+                            <div class="cell">
+                                <h2>Prediction results</h2>
+                                <table class="prediction-table">
+                                    <thead>
+                                        <tr><th>Input</th><th>Predicted output</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in prediction_context.predictions %}
+                                            <tr><td>{{ row.input }}</td><td>{{ row.output }}</td></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="note">Upload a CSV dataset or enter manual values, then submit to see predictions and graphs.</div>
+                        {% endif %}
+
+                        {% if prediction_context.graphs %}
+                            <div class="section">
+                                <h2>Graphs</h2>
+                                {% for graph in prediction_context.graphs %}
+                                    <div class="graph-card">
+                                        <strong>{{ graph.title }}</strong>
+                                        <img src="{{ graph.image }}" alt="{{ graph.title }}" />
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
             {% endif %}
         {% endif %}
         <div class="footer">Rendered via Django view at /</div>
